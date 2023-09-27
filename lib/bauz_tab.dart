@@ -178,7 +178,7 @@ class _MyTableState extends State<MyTable> {
                 },
               ),
             ),
-            DataCell(Text(responseDataList[0].startDiff.toString())), // Display calculated DIFF
+            DataCell(Text('')), // Display calculated DIFF
             DataCell(
               ElevatedButton(
                 onPressed: () {
