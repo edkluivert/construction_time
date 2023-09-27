@@ -66,7 +66,7 @@ class _MyTableState extends State<MyTable> {
    late TextEditingController secondController;
 
 
-  List<ConstructionModel> responseDataList = [];
+  ConstructionModel? constructionModel;
 
   Future<void> fetchConstructionTypeData(int poleid) async {
     print('Fetching ConstructionTypeData2 info for poleid: $poleid');
@@ -80,17 +80,17 @@ class _MyTableState extends State<MyTable> {
     );
 
     if (response.statusCode == 200) {
-      final List<dynamic> responseData = json.decode(response.body);
+      final responseData = json.decode(response.body);
 
-      if (responseData.isNotEmpty) {
+      if (responseData != null) {
         // Use the factory constructor to create QConstructionTypeData objects
-        final List<ConstructionModel> constructionTypeDataList =
-        responseData
-            .map((data) => ConstructionModel.fromJson(data))
-            .toList();
+        final ConstructionModel constructionTypeData = ConstructionModel.fromJson(responseData);
 
         setState(() {
-          responseDataList = constructionTypeDataList;
+          if(constructionModel != null){
+            constructionModel = constructionTypeData;
+    }
+
         });
       }
     } else {
@@ -121,49 +121,49 @@ class _MyTableState extends State<MyTable> {
       ],
       rows: [
         // Existing rows mapped from responseDataList
-        ...responseDataList
-            .asMap() // Use asMap to get the index of each item
-            .map(
-              (index, constructionData) => MapEntry(
-            index,
-            DataRow(
-              cells: <DataCell>[
-                // Map bauzeiten values to Bauzeiten column
-                DataCell(Text(bauzeiten[index])),
-                DataCell(Text(constructionData.spanSectionNumber.toString())),
-                DataCell(
-                  TextField(
-                    controller: _controllers[index],
-                    decoration: InputDecoration(
-                      hintText: 'No IST Value',
-                    ),
-                    onChanged: (value) {
-                      setState(() {
-
-                      });
-                    },
-                  ),
-                ),
-                DataCell(Text('')), // Display calculated DIFF
-                DataCell(
-                  ElevatedButton(
-                    onPressed: () {},
-                    child: const Text('Update IST'),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        )
-            .values
-            .toList(),
+        // ...constructionModel.
+        //     .asMap() // Use asMap to get the index of each item
+        //     .map(
+        //       (index, constructionData) => MapEntry(
+        //     index,
+        //     DataRow(
+        //       cells: <DataCell>[
+        //         // Map bauzeiten values to Bauzeiten column
+        //         DataCell(Text(bauzeiten[index])),
+        //         DataCell(Text(constructionData.spanSectionNumber.toString())),
+        //         DataCell(
+        //           TextField(
+        //             controller: _controllers[index],
+        //             decoration: InputDecoration(
+        //               hintText: 'No IST Value',
+        //             ),
+        //             onChanged: (value) {
+        //               setState(() {
+        //
+        //               });
+        //             },
+        //           ),
+        //         ),
+        //         DataCell(Text('')), // Display calculated DIFF
+        //         DataCell(
+        //           ElevatedButton(
+        //             onPressed: () {},
+        //             child: const Text('Update IST'),
+        //           ),
+        //         ),
+        //       ],
+        //     ),
+        //   ),
+        // )
+        //     .values
+        //     .toList(),
 
         // Additional rows added manually
         DataRow(
           cells: <DataCell>[
             DataCell(Text(bauzeiten[1])),
-            DataCell(Text(responseDataList.isNotEmpty
-                ? responseDataList[0].poleNumber.toString()
+            DataCell(Text(constructionModel != null
+                ? constructionModel!.poleNumber.toString()
                 : 'N/A')),
             DataCell(
               TextField(
@@ -199,8 +199,8 @@ class _MyTableState extends State<MyTable> {
         DataRow(
           cells: <DataCell>[
             DataCell(Text(bauzeiten[2])),
-            DataCell(Text(responseDataList.isNotEmpty
-                ? responseDataList[0].startTarget.toString()
+            DataCell(Text(constructionModel != null
+                ? constructionModel!.startTarget.toString()
                 : 'N/A')),
             DataCell(
               TextField(
@@ -228,8 +228,8 @@ class _MyTableState extends State<MyTable> {
         DataRow(
           cells: <DataCell>[
             DataCell(Text(bauzeiten[3])),
-            DataCell(Text(responseDataList.isNotEmpty
-                ? responseDataList[0].bvmSuccessorTarget.toString()
+            DataCell(Text(constructionModel != null
+                ? constructionModel!.bvmSuccessorTarget.toString()
                 : 'N/A')),
             DataCell(
               TextField(
@@ -256,8 +256,8 @@ class _MyTableState extends State<MyTable> {
         DataRow(
           cells: <DataCell>[
             DataCell(Text(bauzeiten[4])),
-            DataCell(Text(responseDataList.isNotEmpty
-                ? responseDataList[0].endTarget.toString()
+            DataCell(Text(constructionModel != null
+                ? constructionModel!.endTarget.toString()
                 : 'N/A')),
             DataCell(
               TextField(
@@ -282,8 +282,8 @@ class _MyTableState extends State<MyTable> {
         DataRow(
           cells: <DataCell>[
             DataCell(Text(bauzeiten[5])),
-            DataCell(Text(responseDataList.isNotEmpty
-                ? responseDataList[0].ffPredecessorTarget.toString()
+            DataCell(Text(constructionModel != null
+                ? constructionModel!.ffPredecessorTarget.toString()
                 : 'N/A')),
             DataCell(
               TextField(
